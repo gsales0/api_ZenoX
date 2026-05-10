@@ -6,8 +6,8 @@ app.post('/insert/:table', async(req, res) => {
 
     req.body.ID_ENTIDADE = token.ID_ENTIDADE
 
-    let columns = Object.keys(req.body)
-    let values = Object.values(req.body)
+    let columns = Object.keys(req.body.dataRow)
+    let values = Object.values(req.body.dataRow)
 
     let sql = `INSERT INTO ${req.params.table} (${columns.join(', ')}) VALUES (${columns.map(() => '?').join(', ')})`
 
@@ -21,6 +21,8 @@ app.post('/insert/:table', async(req, res) => {
                 message: "Registro Salvo com Sucesso!"
             })
         }
+
+        // CONTINUAR AQUI. TRATAR O NOVO PARÂMETRO SUBGRID. ARRAY = [{ table: [valores] }]
     }
     catch(err){
         if(err.code == "ER_DUP_ENTRY"){

@@ -1,0 +1,15 @@
+USE DB1003;
+
+CREATE VIEW VW_LOOKUP_PESSOAS AS
+	SELECT
+		ID_ENTIDADE,
+        SN_ATIVO,
+		ID_PESSOA AS ID	,
+        CONCAT(
+			LPAD(CD_PESSOA, 4, '0'),
+            ' - ',
+            NM_PESSOA
+        ) AS DS
+	FROM PESSOAS;
+    
+DROP VIEW VW_LOOKUP_PESSOAS;
