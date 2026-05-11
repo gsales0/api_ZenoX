@@ -6,3 +6,4 @@ require('./routes/datagrid')
 
 // CRUD
 require('./routes/crud/insert')
+require('./routes/crud/consult')
