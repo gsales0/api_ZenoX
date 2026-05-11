@@ -36,8 +36,14 @@ con.getConnection((err, suc) => {
 // Exporta os Módulos
 const jwt = require('jsonwebtoken')
 
+// Mapeamento para Foreign Keys
+const map = {
+    "PRODUTOS": "ID_PRODUTO"
+}
+
 module.exports = {
     app: app,
     con: con,
-    jwt: jwt
+    jwt: jwt,
+    map: map
 }

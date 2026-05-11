@@ -1,10 +1,11 @@
 const { app, con, jwt } = require('../server')
 
+/*
 app.post('/insert/:table', async(req, res) => {
 
     let token = jwt.verify(req.headers.x_session, process.env.XKEY)
 
-    req.body.ID_ENTIDADE = token.ID_ENTIDADE
+    req.body.dataRow.ID_ENTIDADE = token.ID_ENTIDADE
 
     let columns = Object.keys(req.body.dataRow)
     let values = Object.values(req.body.dataRow)
@@ -15,14 +16,83 @@ app.post('/insert/:table', async(req, res) => {
 
         let [data] = await con.promise().execute(sql, values)
 
-        if(data.affectedRows > 0){
+        if(data.affectedRows < 1){
             res.send({
-                sucess: true,
-                message: "Registro Salvo com Sucesso!"
+                sucess: false,
+                message: "Erro Interno!"
             })
+            console.log(data)
+            return
         }
 
-        // CONTINUAR AQUI. TRATAR O NOVO PARÂMETRO SUBGRID. ARRAY = [{ table: [valores] }]
+        console.log(data)
+
+        let subGrid = req.body.subGrid;
+
+if (subGrid) {
+    let subTables = Object.keys(subGrid);
+    let subValues = Object.values(subGrid);
+
+    // 1. Solicita uma conexão exclusiva do Pool
+    const connection = await con.promise().getConnection();
+
+    try {
+        // 2. Inicia a transação NESTA conexão específica
+        await connection.beginTransaction();
+
+        for (let i = 0; i < subTables.length; i++) {
+            let tableName = subTables[i];
+            let rows = subValues[i]; 
+
+            if (rows && rows.length > 0) {
+                let columns = Object.keys(rows[0]);
+                let columnNamesString = columns.join(', ');
+                
+                let placeholdersArray = [];
+                let values = []; 
+                
+                for (let x = 0; x < rows.length; x++) {
+                    let currentRow = rows[x];
+                    let rowPlaceholders = [];
+                    
+                    for (let col of columns) {
+                        rowPlaceholders.push('?'); 
+                        values.push(currentRow[col]); 
+                    }
+                    
+                    placeholdersArray.push(`(${rowPlaceholders.join(', ')})`);
+                }
+                
+                let sql = `INSERT INTO ${tableName} (${columnNamesString}) VALUES ${placeholdersArray.join(', ')}`;
+                
+                // 3. Executa a query utilizando a conexão exclusiva, e não o pool direto
+                let [subData] = await connection.execute(sql, values);
+
+                console.log(subData)
+
+                console.log("subData")
+            }
+        }
+        
+        // 4. Se o loop terminou sem erros, comita as alterações
+        await connection.commit();
+
+    } catch (error) {
+        // 5. Se der erro, desfaz tudo na conexão
+        await connection.rollback();
+        console.error("Erro ao inserir subGrid:", error);
+        
+    } finally {
+        // 6. OBRIGATÓRIO: Libera a conexão de volta para o Pool (seja no sucesso ou no erro)
+        connection.release();
+    }
+}
+
+        res.send({
+            sucess: true,
+            message: "Registro salvo com sucesso!"
+        })
+        return
     }
     catch(err){
         if(err.code == "ER_DUP_ENTRY"){
@@ -43,7 +113,7 @@ app.post('/insert/:table', async(req, res) => {
             message: "Erro Interno!"
         })
     }
-})
+})*/
 
 app.post('/consult/:table', async(req, res) => {
 
