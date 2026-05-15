@@ -12,6 +12,10 @@ app.post('/insert/:table', async(req, res) => {
 
         req.body.dataRow.ID_ENTIDADE = jwt.verify(req.headers.x_session, process.env.XKEY).ID_ENTIDADE
 
+        for(let i in req.body.dataRow){
+            if(req.body.dataRow[i] === '')  req.body.dataRow[i] = null
+        }
+
         let columns = Object.keys(req.body.dataRow)
         let values = Object.values(req.body.dataRow)
 
@@ -32,7 +36,11 @@ app.post('/insert/:table', async(req, res) => {
 
                     for(let x = 0; x < subArray[i].length; x++){
                         subPlace.push(`(${subColumns.map(() => '?').join(', ')})`)
-                        subColumns.forEach(c => {subValue.push(subArray[i][x][c])})
+                        
+                        subColumns.forEach(c => {
+                            if(subArray[i][x][c] === '') subArray[i][x][c] = null
+                            subValue.push(subArray[i][x][c])
+                        })
                     }
 
                     let subSQL = `INSERT INTO ${subTable[i]} (${subColumns.join(', ')}) VALUES ${subPlace.join(', ')}`
@@ -60,6 +68,16 @@ app.post('/insert/:table', async(req, res) => {
                 sucess: false,
                 message: `Campo ${campo} já existe em outro Registro!`,
                 field: campo
+            })
+            return
+        }
+
+        if(err.code == "ER_NO_DEFAULT_FOR_FIELD" || err.code == "ER_BAD_NULL_ERROR"){
+            let campo = err.sqlMessage.match(/'([^']+)'/)[1]
+
+            res.send({
+                sucess: false,
+                message: `Campo: ${campo} obrigatório não preenchido!`
             })
             return
         }

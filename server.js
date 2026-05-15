@@ -36,7 +36,8 @@ con.getConnection((err, suc) => {
 // Mapeamento para Foreign Keys
 const map = {
     "PRODUTOS": "ID_PRODUTO",
-    "PESSOAS": "ID_PESSOA"
+    "PESSOAS": "ID_PESSOA",
+    "CONTRATOS": "ID_CONTRATO"
 }
 
 // Exporta os Módulos
