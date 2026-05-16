@@ -24,7 +24,9 @@ const con = mysql.createPool({
     port: process.env.DBPORT,
     user: process.env.DBUSER,
     password: process.env.DBPASS,
-    database: process.env.DBDATA
+    database: process.env.DBDATA,
+
+    dateStrings: true
 })
 
 con.getConnection((err, suc) => {
@@ -37,7 +39,13 @@ con.getConnection((err, suc) => {
 const map = {
     "PRODUTOS": "ID_PRODUTO",
     "PESSOAS": "ID_PESSOA",
-    "CONTRATOS": "ID_CONTRATO"
+    "CONTRATOS": "ID_CONTRATO",
+    "CATEGORIAS": "ID_CATEGORIA"
+}
+
+const rules = {
+    "CONTRATOS": "CD_STATUS = 'A'",
+    "DEFAULT": "SN_ATIVO = 1"
 }
 
 // Exporta os Módulos
@@ -47,5 +55,6 @@ module.exports = {
     app: app,
     con: con,
     jwt: jwt,
-    map: map
+    map: map,
+    rules: rules
 }
