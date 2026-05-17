@@ -15,8 +15,8 @@ app.post('/lookup/:table', async(req, res) => {
         ${req.body.ID} AS ID,
         CONCAT(${req.body.DS.join(",' - ',")}) AS DS
     FROM ${req.params.table} A
-    ${joinSQL}
-    WHERE ${rules[req.params.table] || rules["DEFAULT"]} AND A.ID_ENTIDADE = ?`
+        ${joinSQL}
+    WHERE ${rules[req.params.table] || rules["DEFAULT"]}`
 
     let [dataRes] = await con.promise().query(dataSQL, ID_ENTIDADE)
 
