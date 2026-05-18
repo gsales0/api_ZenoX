@@ -11,6 +11,7 @@ app.post('/update/:table', async(req, res) => {
         await conn.beginTransaction()
 
         let ID_REGISTRO = req.body.dataRow[map[req.params.table]]
+        let ID_ENTIDADE = jwt.verify(req.headers.x_session, process.env.XKEY).ID_ENTIDADE
 
         for(let i in req.body.dataRow){
             if(req.body.dataRow[i] === '')  req.body.dataRow[i] = null
@@ -28,26 +29,48 @@ app.post('/update/:table', async(req, res) => {
             let subArray = Object.values(req.body.subGrid)
 
             for(let i = 0; i < subTable.length; i++){
-                await conn.query(`DELETE FROM ${subTable[i]} WHERE ${map[req.params.table]} = ?`, ID_REGISTRO)
+                let subID = subArray[i]
+                .map(r => r[map[subTable[i]]])
+                .filter(id => id != null && id != '')
+
+                if(subID.length > 0){
+                    await conn.query(`DELETE FROM ${subTable[i]} WHERE ${map[subTable[i]]} NOT IN(?) AND ${map[req.params.table]} = ?`, [subID, ID_REGISTRO])
+                }
+                else{
+                    await conn.query(`DELETE FROM ${subTable[i]} WHERE ${map[req.params.table]} = ?`, [ID_REGISTRO])
+                }                
 
                 if(subArray[i] && subArray[i].length > 0){
-                    subArray[i].forEach(i => {i[map[req.params.table]] = ID_REGISTRO; delete i.ID})
-
-                    let subColumns = Object.keys(subArray[i][0])
-                    let subValue = []
-                    let subPlace = []
-
                     for(let x = 0; x < subArray[i].length; x++){
-                        subPlace.push(`(${subColumns.map(() => '?').join(', ')})`)
-                        
-                        subColumns.forEach(c => {
-                            if(subArray[i][x][c] === '') subArray[i][x][c] = null
-                            subValue.push(subArray[i][x][c])
-                        })
-                    }
+                        let item = subArray[i][x]
+                        item[map[req.params.table]] = ID_REGISTRO
+                        item.ID_ENTIDADE = ID_ENTIDADE
+                        delete item.ID
 
-                    let subSQL = `INSERT INTO ${subTable[i]} (${subColumns.join(', ')}) VALUES ${subPlace.join(', ')}`
-                    await conn.query(subSQL, subValue)
+                        Object.keys(item).forEach(c => {
+                            if(item[c] === '') item[c] = null
+                        })
+
+                        if(item[map[subTable[i]]]){
+                            
+                            let itemColumns = Object.keys(item)
+                            let itemValues = Object.values(item)
+
+                            await conn.query(`
+                                UPDATE ${subTable[i]} SET ${itemColumns.map(c => `${c} = ?`).join(', ')} WHERE ${map[subTable[i]]} = ?
+                                `, [...itemValues, item[map[subTable[i]]]])
+                        }
+                        else{
+                            delete item[map[subTable[i]]]
+
+                            let itemColumns = Object.keys(item)
+                            let itemValues = Object.values(item)
+
+                            await conn.query(`
+                                INSERT INTO ${subTable[i]} (${itemColumns.join(', ')}) VALUES (${itemColumns.map(() => '?').join(', ')})
+                                `, itemValues)
+                        }
+                    }
                 }
             }
         }
@@ -82,6 +105,14 @@ app.post('/update/:table', async(req, res) => {
             res.send({
                 sucess: false,
                 message: `Campo: ${campo} obrigatório não preenchido!`
+            })
+            return
+        }
+
+        if(err.code == "ER_ROW_IS_REFERENCED_2"){
+            res.send({
+                sucess: false,
+                message: `O registro contém dependências!`
             })
             return
         }

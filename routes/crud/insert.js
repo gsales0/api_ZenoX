@@ -10,7 +10,8 @@ app.post('/insert/:table', async(req, res) => {
         conn = await con.promise().getConnection()
         await conn.beginTransaction()
 
-        req.body.dataRow.ID_ENTIDADE = jwt.verify(req.headers.x_session, process.env.XKEY).ID_ENTIDADE
+        let ID_ENTIDADE = jwt.verify(req.headers.x_session, process.env.XKEY).ID_ENTIDADE
+        req.body.dataRow.ID_ENTIDADE = ID_ENTIDADE
 
         for(let i in req.body.dataRow){
             if(req.body.dataRow[i] === '')  req.body.dataRow[i] = null
@@ -28,7 +29,7 @@ app.post('/insert/:table', async(req, res) => {
 
             for(let i = 0; i < subTable.length; i++){
                 if(subArray[i] && subArray[i].length > 0){
-                    subArray[i].forEach(i => {i[map[req.params.table]] = dataRes.insertId; delete i.ID})
+                    subArray[i].forEach(i => {i[map[req.params.table]] = dataRes.insertId; delete i.ID; i.ID_ENTIDADE = ID_ENTIDADE})
 
                     let subColumns = Object.keys(subArray[i][0])
                     let subValue = []

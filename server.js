@@ -46,9 +46,8 @@ const map = {
 }
 
 const rules = {
-    "CATEGORIA_DETALHE":"A.SN_ATIVO = 1 AND T0.SN_ATIVO = 1 AND T0.ID_ENTIDADE = ?",
-    "CONTRATOS": "CD_STATUS = 'A' AND A.ID_ENTIDADE = ?",
-    "DEFAULT": "A.SN_ATIVO = 1 AND A.ID_ENTIDADE = ?"
+    "CONTRATOS": "CD_STATUS = 'A'",
+    "DEFAULT": "A.SN_ATIVO = 1"
 }
 
 // Exporta os Módulos
