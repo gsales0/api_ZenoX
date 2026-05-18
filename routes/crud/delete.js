@@ -35,6 +35,14 @@ app.post('/delete/:table', async(req, res) => {
         await conn.rollback()
         await conn.release()
 
+        if(err.code == "ER_ROW_IS_REFERENCED_2"){
+            res.send({
+                sucess: false,
+                message: `O registro contém dependências!`
+            })
+            return
+        }
+
         console.log(err)
         res.send({
             sucess: false,

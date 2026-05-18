@@ -12,10 +12,14 @@ app.post('/consult/:table', async(req, res) => {
     let [dataRes] = await con.promise().query(dataSQL, [ID_ENTIDADE, ID_REGISTRO])
     let subRes = {}
 
-    for(let i = 0; i < req.body.subGrid.length; i++){
-        let subSQL = `SELECT * FROM ${req.body.subGrid[i]} WHERE ${map[req.params.table]} = ?`
+    let subTables = Object.keys(req.body.subGrid) 
+
+    for(let i = 0; i < subTables.length; i++){
+        let subColumns = req.body.subGrid[subTables[i]]
+
+        let subSQL = `SELECT ${subColumns.join(', ')} FROM ${subTables[i]} WHERE ${map[req.params.table]} = ?`
         let [subData] = await con.promise().query(subSQL, ID_REGISTRO)
-        subRes[req.body.subGrid[i]] = subData
+        subRes[subTables[i]] = subData
     }
 
     res.send({
