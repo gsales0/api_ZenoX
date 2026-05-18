@@ -13,3 +13,6 @@ require('./routes/autocomplete/codigo')
 require('./routes/autocomplete/lookup')
 require('./routes/autocomplete/datagrid')
 require('./routes/autocomplete/change')
+
+// OUTROS
+require('./routes/others/files')
