@@ -46,11 +46,6 @@ const map = {
     "FINANCEIRO_DOCUMENTOS": "ID_FINANCEIRO_DOCUMENTO"
 }
 
-const rules = {
-    "CONTRATOS": "CD_STATUS = 'A'",
-    "DEFAULT": "A.SN_ATIVO = 1"
-}
-
 // Exporta os Módulos
 const jwt = require('jsonwebtoken')
 
@@ -58,6 +53,5 @@ module.exports = {
     app: app,
     con: con,
     jwt: jwt,
-    map: map,
-    rules: rules
+    map: map
 }

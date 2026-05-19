@@ -1,4 +1,4 @@
-const { app, con, jwt, map, rules } = require('../../server')
+const { app, con, jwt, map } = require('../../server')
 
 // ROTA PARA LOOKUP'S DINÂMICOS
 
@@ -16,7 +16,7 @@ app.post('/lookup/:table', async(req, res) => {
         CONCAT(${req.body.DS.join(",' - ',")}) AS DS
     FROM ${req.params.table} A
         ${joinSQL}
-    WHERE ${rules[req.params.table] || rules["DEFAULT"]} AND A.ID_ENTIDADE = ?`
+    WHERE ${req.body.where || "A.SN_ATIVO = 1"} AND A.ID_ENTIDADE = ?`
 
     let [dataRes] = await con.promise().query(dataSQL, ID_ENTIDADE)
 
