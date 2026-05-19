@@ -8,7 +8,7 @@ const http = require('http')
 const app = express()
 
 app.use(cors({ origin: "*" }))
-app.use(express.json())
+app.use(express.json({ limit: '10mb' }))
 
 const server = http.createServer(app)
 
@@ -42,7 +42,8 @@ const map = {
     "CONTRATOS": "ID_CONTRATO",
     "CATEGORIAS": "ID_CATEGORIA",
     "CATEGORIA_DETALHE": "ID_CATEGORIA_DETALHE",
-    "FINANCEIRO":"ID_FINANCEIRO"
+    "FINANCEIRO":"ID_FINANCEIRO",
+    "FINANCEIRO_DOCUMENTOS": "ID_FINANCEIRO_DOCUMENTO"
 }
 
 const rules = {
