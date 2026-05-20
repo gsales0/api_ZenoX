@@ -16,12 +16,16 @@ pdfmake.setLocalAccessPolicy(() => true);
 
 app.post('/reports/listagem', async(req, res) => {
 
+    let ID_ENTIDADE = jwt.verify(req.headers.x_session, process.env.XKEY).ID_ENTIDADE
+
+    let [data] = await con.promise().query('SELECT * FROM ENTIDADES WHERE ID_ENTIDADE = ?', ID_ENTIDADE)
+
     let docDefinition = {
         defaultStyle: { font: 'Helvetica' },
         pageSize: 'A4',
         pageMargins: [ 40, 60, 40, 60 ],
         content: [
-            {text: "RELATÓRIO DE LISTAGEM", style: "header"}
+            {text: data[0].NM_ENTIDADE, style: "header"}
         ] 
     }
 
