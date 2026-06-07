@@ -36,21 +36,10 @@ con.getConnection((err, suc) => {
 })
 
 // Mapeamento para Foreign Keys
-const map = {
-    "PRODUTOS": "ID_PRODUTO",
-    "PESSOAS": "ID_PESSOA",
-    "CONTRATOS": "ID_CONTRATO",
-    "CATEGORIAS": "ID_CATEGORIA",
-    "CATEGORIA_DETALHE": "ID_CATEGORIA_DETALHE",
-    "FINANCEIRO":"ID_FINANCEIRO",
-    "FINANCEIRO_DOCUMENTOS": "ID_FINANCEIRO_DOCUMENTO",
-    "ENTIDADES": "ID_ENTIDADE",
-    "CONTAS":"ID_CONTA"
-}
-
-// Exporta os Módulos
+const { map } = require('./map.config')
 const jwt = require('jsonwebtoken')
 
+// Exporta os Módulos
 module.exports = {
     app: app,
     con: con,

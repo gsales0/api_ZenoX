@@ -1,0 +1,39 @@
+INSERT INTO ENTIDADES (
+	CD_ENTIDADE, 
+    NM_ENTIDADE,
+    DS_ENTIDADE,
+    CNPJ,
+    SN_ANEXO
+    )
+VALUES (
+	'2255',
+    'GABRIEL SALES SANTANA',
+    'GABRIEL SALES SANTANA',
+    '24822967000117',
+    0
+    );
+    
+INSERT INTO USUARIOS (
+	ID_ENTIDADE		,
+    CD_USUARIO		,
+    NM_USUARIO		,
+    HS_SENHA		)
+VALUES (
+	2				,
+    'ROOT'			,
+    'ROOT'			,
+    '$2a$12$9kFFrNuppqpq3PF1MlWH8ux67jgP95sjyjZRk5yZLqWpkwLOu2.tO'
+    );
+
+INSERT INTO USUARIOS (
+	ID_ENTIDADE	,
+    CD_USUARIO	,
+    NM_USUARIO	,
+    HS_SENHA	
+    )
+VALUES (
+	2,
+    '09525743578',
+    'ADMIN',
+    '$2a$12$b0T05BlY9ysvFGdm1T425.2QbBPBX4t5t3v1QbNEsks08B.gDqkfC'
+	);
