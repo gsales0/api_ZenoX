@@ -36,7 +36,7 @@ con.getConnection((err, suc) => {
 })
 
 // Mapeamento para Foreign Keys
-const { map } = require('./map.config')
+const { map } = require('./server.config')
 const jwt = require('jsonwebtoken')
 
 // Exporta os Módulos

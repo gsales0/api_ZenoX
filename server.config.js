@@ -11,3 +11,7 @@ const map = {
     "CONTAS":"ID_CONTA",
     "MOVIMENTACOES":"ID_MOVIMENTACAO"
 }
+
+module.exports = {
+    map: map
+}
