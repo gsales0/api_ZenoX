@@ -2,12 +2,12 @@ CREATE TABLE ESTOQUE (
     ID_ESTOQUE          INT PRIMARY KEY AUTO_INCREMENT  ,
     ID_ENTIDADE         INT NOT NULL                    ,
     DT_ESTOQUE          DATE NOT NULL                   ,
-    TP_ESTOQUE          VARCHAR(1) NOT NULL             , -- 'E' Entrada, 'S' Saída
+    TP_ESTOQUE          VARCHAR(1) NOT NULL             ,
     DS_ESTOQUE          VARCHAR(100) NOT NULL           ,
-    ID_PESSOA           INT                             , -- Fornecedor ou Cliente
-    DOC_ESTOQUE         VARCHAR(50)                     , -- NF, Recibo, etc
-    CD_STATUS           VARCHAR(1) NOT NULL             , -- 'A' Aberto, 'E' Efetivado, 'C' Cancelado
-    VL_ESTOQUE          DECIMAL(10,2)                   , -- Total da movimentação
+    ID_PESSOA           INT                             ,
+    DOC_ESTOQUE         VARCHAR(50)                     ,
+    CD_STATUS           VARCHAR(1) NOT NULL             ,
+    VL_ESTOQUE          DECIMAL(10,2)                   ,
     CD_METODO           VARCHAR(1)                      ,
     ID_CONTA            INT                             ,
     HISTORICO           VARCHAR(250)                    ,
@@ -21,16 +21,17 @@ CREATE TABLE ESTOQUE_ITENS (
     ID_ESTOQUE_ITEM     INT PRIMARY KEY AUTO_INCREMENT  ,
     ID_ESTOQUE          INT NOT NULL                    ,
     ID_ENTIDADE         INT NOT NULL                    ,
-    ID_PRODUTO          INT NOT NULL                    , -- Produto/Serviço
+    ID_PRODUTO          INT NOT NULL                    ,
     DS_ITENS            VARCHAR(100)                    ,
     UN_MEDIDA           VARCHAR(10)                     ,
-    QT_ITENS            DECIMAL(10,3) NOT NULL          , -- 10,3 para permitir Kg, Metros (ex: 1.500)
+    QT_ITENS            DECIMAL(10,3) NOT NULL          ,
     VL_UNITARIO         DECIMAL(10,2) NOT NULL          ,
     VL_TOTAL            DECIMAL(10,2) NOT NULL          ,
     
     FOREIGN KEY (ID_ESTOQUE) REFERENCES ESTOQUE(ID_ESTOQUE)     ,
     FOREIGN KEY (ID_ENTIDADE) REFERENCES ENTIDADES(ID_ENTIDADE) ,
-    FOREIGN KEY (ID_PRODUTO) REFERENCES PRODUTOS(ID_PRODUTO) -- Ajuste para o nome real da sua tabela de produtos
+    FOREIGN KEY (ID_PRODUTO) REFERENCES PRODUTOS(ID_PRODUTO)
 );
 
+ALTER TABLE ESTOQUE_ITENS ADD COLUMN UN_MEDIDA VARCHAR(2) NOT NULL;
 ALTER TABLE ESTOQUE_ITENS DROP COLUMN UN_MEDIDA;
