@@ -46,7 +46,9 @@ app.post('/:alias/userLogin', async(req, res) => {
         let token = jwt.sign(
             {
                 ID_USUARIO: data[0].ID_USUARIO,
-                ID_ENTIDADE: data[0].ID_ENTIDADE
+                ID_ENTIDADE: data[0].ID_ENTIDADE,
+                ID_MES: req.body.ID_MES,
+                ID_ANO: req.body.ID_ANO
             },
             process.env.XKEY,
             {expiresIn: '1h'}
