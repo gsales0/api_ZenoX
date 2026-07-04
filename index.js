@@ -21,3 +21,4 @@ require('./routes/others/dashboard')
 
 // RELATÓRIOS
 require('./routes/reports/listagem')
+require('./routes/reports/documentos')

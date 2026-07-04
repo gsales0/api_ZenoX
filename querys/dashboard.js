@@ -103,8 +103,8 @@ WHERE P.ID_ENTIDADE = ${ID_ENTIDADE} GROUP BY 1, 2, 3, 4, 5, 6, 7 ;
 `
 
 module.exports = {
-    querySaldo: querySaldo,
-	queryCategoria: queryCategoria,
-    queryContas: queryContas,
-    queryProdutos: queryProdutos
+    "default": querySaldo,
+	"categorias": queryCategoria,
+    "contas": queryContas,
+    "produtos": queryProdutos
 }

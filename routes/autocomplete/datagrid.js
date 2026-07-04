@@ -9,7 +9,13 @@ app.post('/dataGrid/:table', async(req, res) => {
     let dataSQL = `SELECT ${req.body.DATAKEY}, ${req.body.COLUMNS.join(', ')} FROM ${req.params.table} WHERE ID_ENTIDADE = ?`
     let values = [ID_ENTIDADE]
 
-    if(req.body.DS_PESQUISA){
+    if(Object.keys(req.body.filters).length > 0){
+        for(let [key, value] of Object.entries(req.body.filters)){
+            dataSQL += ` AND ${key} = '${value}'`
+        }
+    }
+
+    else if(req.body.DS_PESQUISA){
         let subSQL = req.body.COLUMNS.map(c => {
             values.push(`%${req.body.DS_PESQUISA}%`)
             return `CAST(${c} AS CHAR) LIKE ?`
@@ -18,6 +24,7 @@ app.post('/dataGrid/:table', async(req, res) => {
         dataSQL += ` AND (${subSQL})`
     }
 
+    dataSQL += ' ORDER BY 2'
     let [dataRes] = await con.promise().query(dataSQL, values)
 
     res.send(dataRes)

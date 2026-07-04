@@ -1,5 +1,5 @@
 const { app, con, jwt, map } = require('../../server')
-const { querySaldo, queryCategoria, queryContas, queryProdutos } = require('../../querys/dashboard')
+const querys = require('../../querys/dashboard')
 
 // ROTA PARA WIDGETS DINÂMICOS
 
@@ -13,19 +13,7 @@ app.post('/dashboard/:widget', async(req, res) => {
         ID_ANO: session.ID_ANO
     }
 
-    let dataRes
-    if(req.params.widget == "default"){
-        [dataRes] = await con.promise().query(querySaldo(ID_ENTIDADE, COMPETENCIA))
-    }
-    else if(req.params.widget == "categorias"){
-        [dataRes] = await con.promise().query(queryCategoria(ID_ENTIDADE, COMPETENCIA))
-    }
-    else if(req.params.widget == "contas"){
-        [dataRes] = await con.promise().query(queryContas(ID_ENTIDADE, COMPETENCIA))
-    }
-    else if(req.params.widget == "produtos"){
-        [dataRes] = await con.promise().query(queryProdutos(ID_ENTIDADE, COMPETENCIA))
-    }
+    let [dataRes] = await con.promise().query(querys[req.params.widget](ID_ENTIDADE, COMPETENCIA))
 
     res.send(dataRes)
 })
