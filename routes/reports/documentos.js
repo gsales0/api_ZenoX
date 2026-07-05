@@ -41,6 +41,8 @@ function maskCurrency(valor) {
 
 app.post('/reports/documento/:table', async(req, res) => {
 
+    let filters = req.body
+
     let ID_ENTIDADE = jwt.verify(req.headers.x_session, process.env.XKEY).ID_ENTIDADE
     let [entidade] = (await con.promise().query('SELECT * FROM REPORT_ENTIDADE WHERE ID_ENTIDADE = ?', ID_ENTIDADE))[0]
 
@@ -55,7 +57,7 @@ app.post('/reports/documento/:table', async(req, res) => {
 	        INNER JOIN PESSOAS P ON M.ID_PESSOA = P.ID_PESSOA
             INNER JOIN MOVIMENTACOES_ITENS MI ON M.ID_MOVIMENTACAO = MI.ID_MOVIMENTACAO
             INNER JOIN PRODUTOS PR ON MI.ID_PRODUTO = PR.ID_PRODUTO
-        WHERE M.ID_MOVIMENTACAO = 7
+        WHERE M.ID_MOVIMENTACAO = ${filters.ID_MOVIMENTACAO}
         GROUP BY 1, 2, 3`))[0]
 
     let [ITENS] = (await con.promise().query(`
@@ -72,7 +74,7 @@ app.post('/reports/documento/:table', async(req, res) => {
             MI.VL_TOTAL
         FROM MOVIMENTACOES_ITENS MI
             INNER JOIN PRODUTOS P ON MI.ID_PRODUTO = P.ID_PRODUTO
-        WHERE ID_MOVIMENTACAO = 7;`))
+        WHERE ID_MOVIMENTACAO = ${filters.ID_MOVIMENTACAO};`))
 
     pdfmake.addFonts(fonts)
 
@@ -245,27 +247,3 @@ app.post('/reports/documento/:table', async(req, res) => {
         file: data
     })
 })
-
-/*
-    let ID_ENTIDADE = jwt.verify(req.headers.x_session, process.env.XKEY).ID_ENTIDADE
-    let [entidade] = await con.promise().query('SELECT * FROM ENTIDADES WHERE ID_ENTIDADE = ?', ID_ENTIDADE)
-
-    let [dados] = await con.promise().query(`SELECT * FROM ${req.params.table} WHERE ID_ENTIDADE = ?`, ID_ENTIDADE)
-
-    let docDefinition = createPdf(entidade, req.body.columns, dados)
-
-    pdfmake.addFonts(fonts)
-
-    pdfmake.createPdf(docDefinition).getBase64().then((data) => {
-
-        const base64String = 'data:application/pdf;base64,' + data;
-        res.send({ success: true, file: base64String });
-        
-    }).catch(err => {
-        console.error("Erro interno ao gerar o PDF:", err);
-        res.status(500).send({ error: 'Falha na geração do PDF' });
-    });
-
-
-    
-*/

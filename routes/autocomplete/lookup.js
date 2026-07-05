@@ -16,7 +16,7 @@ app.post('/lookup/:table', async(req, res) => {
         CONCAT(${req.body.DS.join(",' - ',")}) AS DS
     FROM ${req.params.table} A
         ${joinSQL}
-    WHERE ${req.body.where || "A.SN_ATIVO = 1"} AND A.ID_ENTIDADE = ? ORDER BY 2`
+    WHERE ${req.body.where || "A.SN_ATIVO = 1"} AND A.ID_ENTIDADE = ? ORDER BY ${(req.body.order).join(', ')}`
 
     let [dataRes] = await con.promise().query(dataSQL, ID_ENTIDADE)
 
